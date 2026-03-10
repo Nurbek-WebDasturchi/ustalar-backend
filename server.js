@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai"; // yangi SDK
+import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
@@ -17,78 +17,71 @@ const ai = new GoogleGenAI({
 // Chat endpoint
 app.post("/chat", async (req, res) => {
   try {
-    const userMessage = req.body.message;
+    const { message } = req.body;
 
-    if (!userMessage) {
-      return res.status(400).json({ error: "Message yo‘q" });
-    }
+    ```
+if (!message) {
+  return res.status(400).json({ error: "Message yo‘q" });
+}
 
-    // Prompt: ustalar haqida AI assistent
-    const prompt = `
-Sening isming "Usta AI" deb tanishtirasan, agar kimdir so'rasa. Sen qurilish ustalari haqida yordam beruvchi AI assistentsan. Va odatda qurilish ustalari kontaktlarini topib berasan, ularning ma'lumotlari shaxsiy emas va e'lonlardan olingan.
+const prompt = ````
+
+Sening isming "Usta AI". Sen qurilish ustalari haqida yordam beruvchi AI assistentsan.
+Odatda qurilish ustalari kontaktlarini topib berasan.
 
 Savol: Santexnik topib ber
-Javob: NUKUS QALASI SANTEXNIK XIZMETI. TELEFON NOMER:+998906599262
+Javob: NUKUS QALASI SANTEXNIK XIZMETI. TELEFON NOMER: +998906599262
 
 Savol: Quruvchi topib ber
-Javob: Mana Nukusdagi qurilish xizmatlari: ✅КВАРТИРА РЕМОНТ,
-✅МАЛЯРКА РОДБОНТ ШПАКЛЕВКА,
-✅ГИПСАКАРТОН ДЕЗАЙН,
-✅ОБОЙ БАСАМЫЗ,
-✅ЛАМИНАТ ПЛЕНТУС,
-ГАЛТЕЛ ТИАГА ,
-✅МОЛДНИГ,
-✅ЦВЕТ ШЫГАРЫУ КРАСКА,
-✅ХДЕМ,
-✅ТВ ЗОНА ,
-✅ГИПКИ МРАМОР ,
-✅КАФЕЛ БАСАМЫЗ,
-✅ОТОЧЕНТО,
-Bu quruvchilar uyning ichki qismini ishlashadi
-+ 99890 700 23 53 ga qo'ngiroq qiling👈
+Javob: Nukusdagi qurilish xizmatlari:
+КВАРТИРА РЕМОНТ, МАЛЯРКА, ГИПСАКАРТОН, ОБОЙ, ЛАМИНАТ.
+Telefon: +998907002353
 
 Savol: Elektrik topib ber
-Javob: Mana Nukusdagi elektrik xizmatlar: Tok montaji, stabilizator o'rnatish, elektro-texnika o'rnatish, kotyol gorelka o'rnatish, avtomatga shit terish, ariston tozalash uchun mutaxasislar raqami: +998970849525
+Javob: Elektrik xizmatlari: Tok montaji, stabilizator o'rnatish, elektro texnika ishlari.
+Telefon: +998970849525
 
-Savol: Nukusdagi texnik Xizmatlarni topib ber
-Javob: Mana sizga ba'zi ximatlar: ✅КАФЕЛЬ 
-✅АБОЙ 
-✅ЛАМИНАТ 
-✅ГИПКИЙ МРАМОР 
-✅ЕСИК УСТАНОВКА 
-✅ЗАМОК САЛЫУ 
-✅ПАТАЛОК ХДЕМ 
-✅ГИПСАКАРДОН 
-✅ЭЛЕКТРИКА МАНТАЖ 
-✅САНТЕКНИКА МАНТАЖ
-✅АРИСТОН УСТАНОВКА
-✅АРИСТОН ТАЗАЛАУ
-✅РАКВИНА УСТАНОВКА 
-✅УНИТАЗ УСТАНОВКА 
-✅ВАННЫ УСТАНОВКА 
-✅НАСОС УСТАНОВКА 
-✅НАСОС РЕМОНТ ishlarini ishlashga tayyor mutaxasis raqami: +998913890490
+Savol: Nukusdagi texnik xizmatlar
+Javob: Kafel, oboy, laminat, eshik o‘rnatish, zamok o‘rnatish, potolok, elektrika, santexnika.
+Telefon: +998913890490
+
 Foydalanuvchi savoli:
-${userMessage}
-Faqat aniq va qisqa javob bering.
+${message}
+
+Faqat aniq va qisqa javob ber.
 `;
 
-    // Yangi SDKda generateContent ishlatiladi
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", // yoki boshqa Gemini model
-      contents: prompt,
-    });
+    ```
+const response = await ai.models.generateContent({
+  model: "gemini-2.5-flash",
+  contents: [
+    {
+      role: "user",
+      parts: [{ text: prompt }]
+    }
+  ]
+});
 
-    const reply = response.text(); // SDK javobidagi text
+const reply = response.text();
 
-    res.json({ reply });
+res.json({ reply });
+```;
   } catch (error) {
     console.error("AI xatolik:", error);
-    res.status(500).json({ error: "AI javob bera olmadi" });
+    res.status(500).json({
+      error: "AI javob bera olmadi",
+      details: error.message,
+    });
   }
 });
 
+// test route
+app.get("/", (req, res) => {
+  res.send("Ustalar AI server ishlayapti");
+});
+
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Server ishlayapti: http://localhost:${PORT}`);
+  console.log(`Server ishlayapti: ${PORT}`);
 });
