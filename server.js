@@ -19,13 +19,12 @@ app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
-    ```
-if (!message) {
-  return res.status(400).json({ error: "Message yo‘q" });
-}
+    if (!message) {
+      return res.status(400).json({ error: "Message yo‘q" });
+    }
 
-const prompt = ````
-
+    // Prompt tayyorlash
+    const prompt = `
 Sening isming "Usta AI". Sen qurilish ustalari haqida yordam beruvchi AI assistentsan.
 Odatda qurilish ustalari kontaktlarini topib berasan.
 
@@ -51,21 +50,21 @@ ${message}
 Faqat aniq va qisqa javob ber.
 `;
 
-    ```
-const response = await ai.models.generateContent({
-  model: "gemini-2.5-flash",
-  contents: [
-    {
-      role: "user",
-      parts: [{ text: prompt }]
-    }
-  ]
-});
+    // AI javobini olish
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+    });
 
-const reply = response.text();
+    // To‘g‘ri propertydan javob olish
+    const reply = response.output_text || response.text || "";
 
-res.json({ reply });
-```;
+    res.json({ reply });
   } catch (error) {
     console.error("AI xatolik:", error);
     res.status(500).json({
