@@ -79,7 +79,7 @@ Faqat aniq va qisqa javob bering.
       contents: prompt,
     });
 
-    const reply = response.text; // SDK javobidagi text
+    const reply = response.text(); // SDK javobidagi text
 
     res.json({ reply });
   } catch (error) {
