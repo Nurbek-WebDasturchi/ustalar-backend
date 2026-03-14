@@ -78,7 +78,11 @@ Faqat aniq va qisqa javob ber.
 app.get("/", (req, res) => {
   res.send("Ustalar AI server ishlayapti");
 });
-
+// server uxlab qolmasligi uchun
+app.get("/ping", (req, res) => {
+  res.send("alive");
+});
+// /server uxlab qolmasligi uchun
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
